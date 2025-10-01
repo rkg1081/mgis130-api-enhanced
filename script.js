@@ -73,20 +73,40 @@ async function getFact() {
 
 // UI Layer - Display Functions
 function displayQuote(quoteData) {
+    // Remove animation class
+    quoteDisplay.classList.remove('fade-in');
+    
+    // Force a reflow to restart the animation
+    void quoteDisplay.offsetWidth;
+    
+    // Update content
     quoteDisplay.innerHTML = `
         <div class="quote-content">
             <p class="quote-text">"${quoteData.quote}"</p>
             <p class="quote-author">— ${quoteData.author}</p>
         </div>
     `;
+    
+    // Add animation class
+    quoteDisplay.classList.add('fade-in');
 }
 
 function displayFact(factData) {
+    // Remove animation class
+    factDisplay.classList.remove('fade-in');
+    
+    // Force a reflow to restart the animation
+    void factDisplay.offsetWidth;
+    
+    // Update content
     factDisplay.innerHTML = `
         <div class="fact-content">
             <p class="fact-text">${factData.fact}</p>
         </div>
     `;
+    
+    // Add animation class
+    factDisplay.classList.add('fade-in');
 }
 
 function showLoading(type, isLoading) {
