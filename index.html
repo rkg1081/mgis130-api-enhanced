@@ -4,12 +4,362 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Inspiration & Facts</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Modern Brand-Aligned Styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #7FC8BD 0%, #D4A574 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #FBF7F4;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(74, 52, 40, 0.15);
+            backdrop-filter: blur(10px);
+            border: 3px solid #F0E6DC;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #D4A574;
+        }
+
+        h1 {
+            color: #B85C38;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(184, 92, 56, 0.1);
+        }
+
+        .subtitle {
+            color: #4A3428;
+            font-size: 1.2em;
+            font-style: italic;
+            opacity: 0.8;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .refresh-btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #B85C38 0%, #D4A574 100%);
+            color: #FBF7F4;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(184, 92, 56, 0.3);
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(184, 92, 56, 0.4);
+            background: linear-gradient(135deg, #a04f2f 0%, #c99666 100%);
+        }
+
+        .refresh-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .category-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-selector label {
+            font-weight: 600;
+            color: #4A3428;
+        }
+
+        .category-selector select {
+            padding: 10px 15px;
+            border: 2px solid #D4A574;
+            border-radius: 20px;
+            background: white;
+            font-size: 1em;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.3s ease;
+            color: #4A3428;
+        }
+
+        .category-selector select:focus {
+            border-color: #B85C38;
+            box-shadow: 0 0 0 3px rgba(184, 92, 56, 0.1);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(74, 52, 40, 0.1);
+            transition: transform 0.3s ease;
+            border: 2px solid #F0E6DC;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(74, 52, 40, 0.15);
+            border-color: #D4A574;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #7FC8BD 0%, #B85C38 100%);
+            color: #FBF7F4;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .card-content {
+            padding: 30px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: #FBF7F4;
+        }
+
+        .quote-text {
+            font-size: 1.2em;
+            font-style: italic;
+            color: #4A3428;
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        .quote-author {
+            font-size: 1em;
+            color: #B85C38;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .fact-text {
+            font-size: 1.1em;
+            color: #4A3428;
+            line-height: 1.8;
+        }
+
+        .loading-message {
+            color: #7FC8BD;
+            font-style: italic;
+        }
+
+        .loading-indicator {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.1em;
+            color: #B85C38;
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error-display {
+            background: linear-gradient(135deg, #B85C38 0%, #D4A574 100%);
+            color: #FBF7F4;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(184, 92, 56, 0.3);
+        }
+
+        .error-display h3 {
+            margin-bottom: 10px;
+            font-size: 1.4em;
+        }
+
+        .error-display button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #FBF7F4;
+            border: 2px solid #FBF7F4;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .error-display button:hover {
+            background: #FBF7F4;
+            color: #B85C38;
+        }
+
+        .info-section {
+            background: #F0E6DC;
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #B85C38;
+            box-shadow: 0 5px 20px rgba(74, 52, 40, 0.08);
+        }
+
+        .info-section h3 {
+            color: #4A3428;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .architecture-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .layer {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(74, 52, 40, 0.1);
+            border: 2px solid #FBF7F4;
+            transition: all 0.3s ease;
+        }
+
+        .layer:hover {
+            border-color: #7FC8BD;
+            transform: translateY(-2px);
+        }
+
+        .layer h4 {
+            color: #B85C38;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .layer ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .layer li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+            color: #4A3428;
+        }
+
+        .layer li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #7FC8BD;
+            font-weight: bold;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .refresh-btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .architecture-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation for content updates */
+        .content-updating {
+            opacity: 0.6;
+            transform: scale(0.98);
+            transition: all 0.3s ease;
+        }
+
+        /* Brand accent decoration */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #B85C38 0%, #7FC8BD 50%, #D4A574 100%);
+            border-radius: 20px 20px 0 0;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>📚 Daily Inspiration & Facts</h1>
+            <h1>🎨 Daily Inspiration & Facts</h1>
             <p class="subtitle">Fuel your mind with wisdom and knowledge</p>
         </header>
         
@@ -102,6 +452,203 @@
         </div>
     </div>
     
-    <script src="script.js"></script>
+    <script>
+        // API Configuration - Data Layer
+        const API_KEY = 'pYKYeAH2pK65Gpxi0i6F9Q==LJ3RlsbfuBIa3zyv';
+        const QUOTES_URL = 'https://api.api-ninjas.com/v1/quotes';
+        const FACTS_URL = 'https://api.api-ninjas.com/v1/facts';
+
+        // Get DOM elements
+        const refreshBtn = document.getElementById('refreshBtn');
+        const quoteCategory = document.getElementById('quoteCategory');
+        const quoteDisplay = document.getElementById('quoteDisplay');
+        const factDisplay = document.getElementById('factDisplay');
+        const loadingQuote = document.getElementById('loadingQuote');
+        const loadingFact = document.getElementById('loadingFact');
+        const errorDisplay = document.getElementById('errorDisplay');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Processing Layer - API Request Function
+        async function makeAPIRequest(url, params = {}) {
+            const queryParams = new URLSearchParams(params).toString();
+            const fullUrl = queryParams ? `${url}?${queryParams}` : url;
+            
+            const response = await fetch(fullUrl, {
+                method: 'GET',
+                headers: {
+                    'X-Api-Key': API_KEY,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+            }
+            
+            return await response.json();
+        }
+
+        // Processing Layer - Get Quote Data
+        async function getQuote(category) {
+            try {
+                showLoading('quote', true);
+                
+                const data = await makeAPIRequest(QUOTES_URL);
+                
+                if (!data || data.length === 0) {
+                    throw new Error('No quotes found for this category');
+                }
+                
+                return data[0];
+            } catch (error) {
+                throw new Error(`Failed to get quote: ${error.message}`);
+            } finally {
+                showLoading('quote', false);
+            }
+        }
+
+        // Processing Layer - Get Fact Data
+        async function getFact() {
+            try {
+                showLoading('fact', true);
+                
+                const data = await makeAPIRequest(FACTS_URL);
+                
+                if (!data || data.length === 0) {
+                    throw new Error('No facts available');
+                }
+                
+                return data[0];
+            } catch (error) {
+                throw new Error(`Failed to get fact: ${error.message}`);
+            } finally {
+                showLoading('fact', false);
+            }
+        }
+
+        // UI Layer - Display Functions
+        function displayQuote(quoteData) {
+            quoteDisplay.classList.remove('fade-in');
+            void quoteDisplay.offsetWidth;
+            
+            quoteDisplay.innerHTML = `
+                <div class="quote-content">
+                    <p class="quote-text">"${quoteData.quote}"</p>
+                    <p class="quote-author">— ${quoteData.author}</p>
+                </div>
+            `;
+            
+            quoteDisplay.classList.add('fade-in');
+        }
+
+        function displayFact(factData) {
+            factDisplay.classList.remove('fade-in');
+            void factDisplay.offsetWidth;
+            
+            factDisplay.innerHTML = `
+                <div class="fact-content">
+                    <p class="fact-text">${factData.fact}</p>
+                </div>
+            `;
+            
+            factDisplay.classList.add('fade-in');
+        }
+
+        function showLoading(type, isLoading) {
+            const loadingElement = type === 'quote' ? loadingQuote : loadingFact;
+            const contentElement = type === 'quote' ? quoteDisplay : factDisplay;
+            
+            if (isLoading) {
+                loadingElement.classList.remove('hidden');
+                contentElement.classList.add('content-updating');
+                refreshBtn.disabled = true;
+            } else {
+                loadingElement.classList.add('hidden');
+                contentElement.classList.remove('content-updating');
+                refreshBtn.disabled = false;
+            }
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorDisplay.classList.remove('hidden');
+            
+            setTimeout(() => {
+                errorDisplay.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Main Functions
+        async function loadQuote() {
+            try {
+                const category = quoteCategory.value;
+                const quoteData = await getQuote(category);
+                displayQuote(quoteData);
+            } catch (error) {
+                console.error('Quote loading error:', error);
+                quoteDisplay.innerHTML = `
+                    <div class="error-content">
+                        <p>❌ Unable to load quote</p>
+                        <p style="font-size: 0.9em; color: #B85C38;">${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadFact() {
+            try {
+                const factData = await getFact();
+                displayFact(factData);
+            } catch (error) {
+                console.error('Fact loading error:', error);
+                factDisplay.innerHTML = `
+                    <div class="error-content">
+                        <p>❌ Unable to load fact</p>
+                        <p style="font-size: 0.9em; color: #B85C38;">${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function refreshContent() {
+            await Promise.all([
+                loadQuote(),
+                loadFact()
+            ]);
+        }
+
+        // Event Listeners
+        refreshBtn.addEventListener('click', refreshContent);
+        quoteCategory.addEventListener('change', loadQuote);
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🎨 Daily Inspiration & Facts loaded!');
+            console.log('Data Layer: Connected to API Ninjas (Quotes + Facts)');
+            console.log('Processing Layer: Ready for multiple API requests');
+            console.log('UI Layer: Event listeners attached');
+            
+            if (API_KEY === 'YOUR_API_KEY_HERE') {
+                showError('Please add your API Ninjas key to script.js');
+                return;
+            }
+            
+            refreshContent();
+        });
+
+        window.addEventListener('error', (e) => {
+            console.error('Application error:', e);
+            showError('Something went wrong. Please refresh the page.');
+        });
+
+        window.addEventListener('online', () => {
+            console.log('Connection restored');
+            refreshContent();
+        });
+
+        window.addEventListener('offline', () => {
+            showError('No internet connection. Content will update when connection is restored.');
+        });
+    </script>
 </body>
 </html>
